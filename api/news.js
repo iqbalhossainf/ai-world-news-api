@@ -4,12 +4,25 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+
 function safeParse(text) {
   try {
     return JSON.parse(text);
   } catch {
     return [];
   }
+}
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders
+  });
 }
 
 export async function GET() {
@@ -49,14 +62,26 @@ Return only JSON.
     const text = response.output_text || "[]";
     const data = safeParse(text);
 
-    return Response.json(data);
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json"
+      }
+    });
   } catch (error) {
-    return Response.json(
-      {
+    return new Response(
+      JSON.stringify({
         ok: false,
         error: String(error)
-      },
-      { status: 500 }
+      }),
+      {
+        status: 500,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json"
+        }
+      }
     );
   }
 }
