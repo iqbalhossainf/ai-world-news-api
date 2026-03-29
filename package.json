@@ -1,8 +1,11 @@
 {
   "name": "ai-world-news-api",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
+  "description": "Backend API for AI World News",
   "dependencies": {
-    "openai": "latest"
+    "openai": "latest",
+    "@neondatabase/serverless": "latest"
   }
 }
